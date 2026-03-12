@@ -1,20 +1,58 @@
 ---
-
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { Image } from 'astro:assets';
+import cat from '../assets/black-cat-laptop.png';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-		<p>
-			Test
-		</p>
-	</body>
-</html>
+<BaseLayout>
+  <Fragment slot="head">
+    <title>Andrea Lavezzi — Work in Progress</title>
+    <meta
+      name="description"
+      content="Andrea Lavezzi — Software Developer. Work in progress."
+    />
+  </Fragment>
+
+  	<main class="page">
+		<section class="shell" aria-label="Work in progress">
+			<p class="eyebrow">connection unsuccessful</p>
+			<h1>WORK IN PROGRESS<span class="cursor">_</span></h1>
+
+			<div class="identity">
+				<div class="name">Andrea Lavezzi</div>
+				<div class="role">Software Developer</div>
+			</div>
+
+			<p class="body-copy">
+				This site is currently being rebuilt with care.
+				A more complete space for profile, projects and writing will appear here soon.
+			</p>
+
+			<nav class="commands" aria-label="Quick links">
+				<a href="https://github.com/AndreaLavezzi" target="_blank" rel="noopener noreferrer">
+					<span class="prompt">&gt;</span>
+					<span>github</span>
+				</a>
+
+				<a href="https://www.linkedin.com/in/andrea-lavezzi-a13b13195" target="_blank" rel="noopener noreferrer">
+					<span class="prompt">&gt;</span>
+					<span>linkedin</span>
+				</a>
+
+				<a href="mailto:info@andrealavezzi.it">
+					<span class="prompt">&gt;</span>
+					<span>info@andrealavezzi.it</span>
+				</a>
+			</nav>
+		</section>
+	</main>
+
+	<footer class="footer">
+  <Image
+    class="cat"
+    src={cat}
+    alt="Black cat with a laptop"
+  />
+  <p class="copyright">© {new Date().getFullYear()} Andrea Lavezzi</p>
+</footer>
+</BaseLayout>
