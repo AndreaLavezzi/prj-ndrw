@@ -26,38 +26,22 @@ jobs:
       - name: Build site
         run: npm run build
 
-      - name: Install rsync and sshpass
+      - name: Install lftp
         run: |
           sudo apt-get update
-          sudo apt-get install -y rsync sshpass
+          sudo apt-get install -y lftp
 
-      - name: Add server to known_hosts
+      - name: Deploy dist via SFTP
         env:
-          IONOS_HOST: ${{ secrets.IONOS_HOST }}
-        run: |
-          mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
-          ssh-keyscan -H "$IONOS_HOST" >> ~/.ssh/known_hosts
-
-      - name: Ensure target directory exists
-        env:
-          SSHPASS: ${{ secrets.IONOS_PASSWORD }}
           IONOS_HOST: ${{ secrets.IONOS_HOST }}
           IONOS_USER: ${{ secrets.IONOS_USER }}
+          IONOS_PASSWORD: ${{ secrets.IONOS_PASSWORD }}
           IONOS_TARGET_DIR: ${{ secrets.IONOS_TARGET_DIR }}
         run: |
-          sshpass -e ssh "$IONOS_USER@$IONOS_HOST" "mkdir -p '$IONOS_TARGET_DIR'"
-
-      - name: Deploy dist
-        env:
-          SSHPASS: ${{ secrets.IONOS_PASSWORD }}
-          IONOS_HOST: ${{ secrets.IONOS_HOST }}
-          IONOS_USER: ${{ secrets.IONOS_USER }}
-          IONOS_TARGET_DIR: ${{ secrets.IONOS_TARGET_DIR }}
-        run: |
-          sshpass -e rsync -az --delete \
-            --omit-dir-times \
-            --no-perms \
-            --no-owner \
-            --no-group \
-            dist/ "$IONOS_USER@$IONOS_HOST:$IONOS_TARGET_DIR"
+          lftp -u "$IONOS_USER","$IONOS_PASSWORD" "sftp://$IONOS_HOST" <<EOF
+          set sftp:auto-confirm yes
+          set cmd:fail-exit yes
+          cd "$IONOS_TARGET_DIR"
+          mirror -R --delete --verbose dist .
+          bye
+          EOF
