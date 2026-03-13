@@ -1,13 +1,56 @@
 ---
 import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  robots?: string;
+  lang?: string;
+  jsonLd?: Record<string, any> | null;
+}
+
+const {
+  title = "Andrea Lavezzi | Work in Progress",
+  description = "Official website of Andrea Lavezzi, software developer. Portfolio, projects and contacts. Site currently under construction.",
+  canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).toString() : undefined,
+  robots = "index,follow",
+  lang = "en",
+  jsonLd = null,
+} = Astro.props;
 ---
 
-<html lang="en">
+<!doctype html>
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content={robots} />
+
+    {canonical && <link rel="canonical" href={canonical} />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={canonical} />}
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
     <slot name="head" />
+
+    {jsonLd && (
+      <script
+        type="application/ld+json"
+        set:html={JSON.stringify(jsonLd)}
+      />
+    )}
   </head>
+
   <body>
     <slot />
   </body>
